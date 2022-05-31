@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar'
+import Accordion from '../components/Accordion'
 
 const Faq = () => {
+
+    async function deleteButton() {
+        document.getElementById('connectButton').remove();
+    }
+
+    useEffect(() => {
+        deleteButton()
+    }, [])
+
     return (
+
         <div>
             <Navbar />
             <h1> FAQ</h1>
-            <form action="idk">
-                <h3>Why donate ?</h3>
-                <h4>Lebanon is in bad conditions</h4>
-            </form>
+            <Accordion />
         </div>
     );
 };

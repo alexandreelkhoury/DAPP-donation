@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Body = () => {
+const Body = (props) => {
     return (
         <div className="container">
             <h1>I Stand With Lebanon</h1>
             <div className="row">
-                <h4>Please connect your wallet</h4>
+                <h4 id="connect-address">Please connect your wallet</h4>
                 <div>
                     <label>Donate and get in return up to 3 NFTs !</label>
                     <br />
@@ -16,6 +16,7 @@ const Body = () => {
                         type="number"
                         placeholder="0.01"
                         min="0.01"
+                        onClick={props.mint}
                     />
                     <button>mint</button>
                 </div>

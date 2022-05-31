@@ -2,16 +2,28 @@ import React, { useEffect } from 'react';
 import Navigation from './Navigation'
 
 const Navbar = (props) => {
-    useEffect(() => {
-        async function isConnected() {
-            if (props.account.length > 0) {
-                var button = document.getElementById('connectButton');
-                const userAddress = document.createElement('h3');
-                userAddress.innerHTML = '<h4 id="account">' + props.account + '</h4>';
-                button.parentNode.replaceChild(userAddress, button);
-            }
+
+    async function removeConnectButton() {
+        if (props.account.length > 0) {
+            var connect = document.getElementById('connect-address');
+            const userAddress = document.createElement('h5');
+            userAddress.innerHTML = '<h5 id="account">' + props.account[0] + '</h5>';
+            connect.parentNode.replaceChild(userAddress, connect);
         }
-        isConnected()
+    }
+
+    async function isOwner() {
+        if (props.account[0] === '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266') {
+            var button = document.getElementById('connectButton');
+            const withdrawButton = document.createElement('button');
+            withdrawButton.innerHTML = 'Withdraw';
+            button.parentNode.replaceChild(withdrawButton, button);
+        }
+    }
+
+    useEffect(() => {
+        removeConnectButton()
+        isOwner()
     }, [])
 
     return (
@@ -34,7 +46,7 @@ const Navbar = (props) => {
                         <Navigation />
 
                         <div class="text-end">
-                            <button type="button" id="connectButton" class="btn btn-outline-light me-2" style={{ position: "absolute", top: "13px", right: "20px" }}>Connect Wallet</button>
+                            <button type="button" onClick={props.connectWallet} id="connectButton" class="btn btn-outline-light me-2" style={{ position: "absolute", top: "13px", right: "20px" }}>Connect Wallet</button>
                         </div>
                     </div>
                 </div>
