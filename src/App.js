@@ -2,7 +2,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home';
 import Faq from './pages/Faq';
-import { React, useState, useEffect } from 'react';
+import { React, useState } from 'react';
 import { ethers, utils } from 'ethers';
 import IStandWithLebanon from './artifacts/contracts/IStandWithLebanon.sol/IStandWithLebanon.json';
 
@@ -23,37 +23,14 @@ const App = () => {
       const contract = new ethers.Contract(contractAddress, IStandWithLebanon.abi, signer);
       // const contract2 = new ethers.Contract(contractAddress, IStandWithLebanon.abi, provider);
       setContract(contract);
-      if (accounts.length > 0) {
+      if (accounts[0].length > 0) {
         var connect = document.getElementById('connect-address');
         const userAddress = document.createElement('h5');
-        userAddress.innerHTML = '<h5 id="account">' + accounts[0] + '</h5>';
+        userAddress.innerHTML = '<h5 id="account"> Connected : ' + accounts[0] + '</h5>';
         connect.parentNode.replaceChild(userAddress, connect);
       }
-      isOwner();
     }
   }
-
-  async function isOwner() {
-    if (accounts[0] === '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266') {
-      var button = document.getElementById('connectButton');
-      const withdrawButton = document.createElement('button');
-      withdrawButton.innerHTML = 'Withdraw';
-      button.parentNode.replaceChild(withdrawButton, button);
-    }
-  }
-
-
-  useEffect(() => {
-    async function isOwner() {
-      if (accounts[0] === '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266') {
-        var button = document.getElementById('connectButton');
-        const withdrawButton = document.createElement('button');
-        withdrawButton.innerHTML = 'Withdraw';
-        button.parentNode.replaceChild(withdrawButton, button);
-      }
-    }
-    isOwner();
-  }, []);
 
   async function mint() {
     if (typeof window.ethereum !== 'undefined') {
@@ -77,7 +54,10 @@ const App = () => {
   async function withdraw() {
     if (typeof window.ethereum !== 'undefined') {
       try {
-        const transaction = await contract.withdraw();
+        let overrides = {
+          from: accounts[0]
+        }
+        const transaction = await contract.withdraw(overrides);
         await transaction.wait;
       }
       catch (err) {
@@ -91,7 +71,7 @@ const App = () => {
       <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path="" element={<Home accounts={accounts} connectWallet={connectWallet} mint={mint} />} />
+            <Route path="" element={<Home accounts={accounts} connectWallet={connectWallet} mint={mint} withdraw={withdraw} />} />
             <Route path="/FAQ" element={<Faq />} />
           </Routes>
         </BrowserRouter>
