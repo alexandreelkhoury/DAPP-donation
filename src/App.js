@@ -2,11 +2,11 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home';
 import Faq from './pages/Faq';
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { ethers, utils } from 'ethers';
 import IStandWithLebanon from './artifacts/contracts/IStandWithLebanon.sol/IStandWithLebanon.json';
 
-const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const contractAddress = '0x0CeeA55746668D3f0A14cAefe2d2dE0302244f93';
 
 const App = () => {
 
@@ -14,20 +14,34 @@ const App = () => {
   const [accounts, setAccounts] = useState([]);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+
+    async function fetch() {
+      if (typeof window.ethereum !== 'undefined') {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        setAccounts(accounts);
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, IStandWithLebanon.abi, signer);
+        setContract(contract);
+        if (accounts.length > 0) {
+          document.getElementById('connect-address').textContent = 'Connected to : ' + accounts[0];
+        }
+      }
+    }
+    fetch();
+  }, [])
+
   async function connectWallet() {
     if (typeof window.ethereum !== 'undefined') {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      await setAccounts(accounts);
+      setAccounts(accounts);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(contractAddress, IStandWithLebanon.abi, signer);
-      // const contract2 = new ethers.Contract(contractAddress, IStandWithLebanon.abi, provider);
       setContract(contract);
-      if (accounts[0].length > 0) {
-        var connect = document.getElementById('connect-address');
-        const userAddress = document.createElement('h5');
-        userAddress.innerHTML = '<h5 id="account"> Connected : ' + accounts[0] + '</h5>';
-        connect.parentNode.replaceChild(userAddress, connect);
+      if (accounts.length > 0) {
+        document.getElementById('connect-address').textContent = 'Connected to : ' + accounts[0];
       }
     }
   }
@@ -54,10 +68,7 @@ const App = () => {
   async function withdraw() {
     if (typeof window.ethereum !== 'undefined') {
       try {
-        let overrides = {
-          from: accounts[0]
-        }
-        const transaction = await contract.withdraw(overrides);
+        const transaction = await contract.withdraw();
         await transaction.wait;
       }
       catch (err) {
@@ -67,16 +78,14 @@ const App = () => {
   }
 
   return (
-    <body>
-      <div className="App">
-        <BrowserRouter>
-          <Routes>
-            <Route path="" element={<Home accounts={accounts} connectWallet={connectWallet} mint={mint} withdraw={withdraw} />} />
-            <Route path="/FAQ" element={<Faq />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
-    </body>
+    <div className="App">
+      <BrowserRouter>
+        <Routes>
+          <Route path="" element={<Home accounts={accounts} connectWallet={connectWallet} mint={mint} withdraw={withdraw} />} />
+          <Route path="/FAQ" element={<Faq />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 

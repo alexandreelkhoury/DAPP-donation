@@ -2,6 +2,9 @@ import React from 'react';
 
 const Card = () => {
     return (
+
+        // Shows the pictures of the NFTs
+
         <div class="card-group" style={{ maxWidth: "68rem", margin: "20px 150px" }}>
             <div class="card text-bg-dark mb-3">
                 <img src="./1.jpg" class="card-img-top" alt="Raise Lebanon Heart" />

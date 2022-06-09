@@ -28,10 +28,10 @@ module.exports = {
       chainId: 1337
     },
 
-    //rinkeby: {
-    //  url: "https://rinkeby.infura.io/v3/31eeea37900149ad9434747761bed71f",
-    //  accounts: [process.env.PRIVATE_KEY]
-    //}
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/31eeea37900149ad9434747761bed71f",
+      accounts: ["b76f95c3104d31ea97a01250f34276e1e8b827496b9ae2bca6a3a4d37f77aaf4"]
+    }
 
   }
 };
