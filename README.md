@@ -9,5 +9,7 @@ Donors can get up to 3 NFTs depending on how much they donate :
 
 it's always better to have a little gift back ;)
 
+lien youtube pour voir la vidéo de présentation : https://www.youtube.com/watch?v=lzDdLE1C7jA&t=2s
+
 
 
