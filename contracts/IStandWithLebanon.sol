@@ -2,7 +2,6 @@
 pragma solidity 0.8.13;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
 /**
@@ -11,15 +10,23 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
  */
 
 
-contract IStandWithLebanon is ERC1155, Ownable, ERC1155Supply {
+contract IStandWithLebanon is ERC1155, ERC1155Supply {
 
     uint public constant NFT1 = 1;
     uint public constant NFT2 = 2;
     uint public constant NFT3 = 3;
+    address public owner;
 
     event newDonation(address indexed _from,uint256 time, uint _value);
 
-    constructor() ERC1155("https://gateway.pinata.cloud/ipfs/QmcwiHq43nPqs88CcCs3ZXLDD8Tmi6naLQC1vVbtBop6Qt/{id}.json") {}
+    constructor() ERC1155("https://gateway.pinata.cloud/ipfs/QmcwiHq43nPqs88CcCs3ZXLDD8Tmi6naLQC1vVbtBop6Qt/{id}.json") {
+      owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
 
     function setURI(string memory newuri) public onlyOwner {
         _setURI(newuri);
@@ -33,7 +40,6 @@ contract IStandWithLebanon is ERC1155, Ownable, ERC1155Supply {
 
     function mint() public payable {
         require(msg.value >= 0.01 ether, "Please enter an amount greater than 0.01 ether !");
-        totaldonations+=msg.value;
         if (msg.value>= 0.01 ether){
             _mint(msg.sender, NFT1, 1, "");
         }
@@ -52,7 +58,7 @@ contract IStandWithLebanon is ERC1155, Ownable, ERC1155Supply {
      */
 
     function withdraw() public payable onlyOwner {
-        (bool success, ) = ownerr.call{value: address(this).balance}("");
+        (bool success, ) = owner.call{value: address(this).balance}("");
         require(success, "Failed to send to owner");
     }
 
